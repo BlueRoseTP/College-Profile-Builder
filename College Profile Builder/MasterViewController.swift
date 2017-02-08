@@ -30,6 +30,7 @@ class MasterViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         self.clearsSelectionOnViewWillAppear = self.splitViewController!.isCollapsed
         super.viewWillAppear(animated)
+        tableView.reloadData()
     }
 
     override func didReceiveMemoryWarning() {
@@ -52,7 +53,7 @@ class MasterViewController: UITableViewController {
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alert.addAction(cancelAction)
-        let addAction = UIAlertAction(title: "Add", style: .default) { (action) in
+        let addCollegeAction = UIAlertAction(title: "Add", style: .default) { (action) in
             let nameField = alert.textFields![0] as UITextField
             let locationField = alert.textFields![1] as UITextField
             let numberOfStudentsField = alert.textFields![2] as UITextField
@@ -67,16 +68,17 @@ class MasterViewController: UITableViewController {
                 self.objects.append(college)
                 self.tableView.reloadData()
             }
+        }
+            alert.addAction(addCollegeAction)
+            present(alert, animated: true, completion: nil)
     }
-        alert.addAction(addAction)
-        present(alert, animated: true, completion: nil)
 
     // MARK: - Segues
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow {
-                let object = objects[indexPath.row] as! NSDate
+                let object = objects[indexPath.row] as! College
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 controller.detailItem = object
                 controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
@@ -98,8 +100,8 @@ class MasterViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
 
-        let object = objects[indexPath.row] as! NSDate
-        cell.textLabel!.text = object.description
+        let object = objects[indexPath.row] as! College
+        cell.textLabel!.text = object.name
         return cell
     }
 
